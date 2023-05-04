@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
 
 app.post("/signin", (req, res) => {
 	console.log(req.body);
-	res.send("DONE");
+	res.send("Success Signin!");
 });
 
 app.listen(port, () => {
