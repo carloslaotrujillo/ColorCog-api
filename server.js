@@ -1,4 +1,3 @@
-import usersDatabase from "./usersDatabase.js";
 import express from "express";
 import * as dotenv from "dotenv";
 import { Sequelize } from "sequelize";
