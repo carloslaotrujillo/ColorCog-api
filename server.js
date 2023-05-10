@@ -38,7 +38,6 @@ try {
 }
 
 const [results, metadata] = await sequelize.query("SELECT * from users");
-console.log(results);
 
 app.listen(process.env.APP_PORT, () => {
 	console.log("Server is running on port " + process.env.APP_PORT);
