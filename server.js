@@ -1,26 +1,21 @@
 import express from "express";
 import * as dotenv from "dotenv";
-import { Sequelize } from "sequelize";
 import cors from "cors";
+import bcrypt from "bcrypt";
+import { Sequelize } from "sequelize";
 
+// INIT
 if (process.env.NODE_ENV === "development") {
 	dotenv.config();
 }
-
 const app = express();
+const SALT_ROUNDS = 10;
 
+// MIDDLEWARE
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-	res.send("It Works!");
-});
-
-app.post("/signin", (req, res) => {
-	console.log(req.body);
-	res.send("Success Signin!");
-});
-
+// DB CONNECTION
 const sequelize = new Sequelize({
 	dialect: "postgres",
 	host: process.env.DB_HOST,
@@ -37,8 +32,20 @@ try {
 	console.error("Unable to connect to the database:", error);
 }
 
-const [results, metadata] = await sequelize.query("SELECT * from users");
+// ROUTES
+app.get("/", (req, res) => {
+	res.send("It Works!");
+});
 
+app.post("/signin", (req, res) => {
+	const { username, password } = req.body;
+	const hash = bcrypt.hashSync(password, SALT_ROUNDS);
+	console.log(password);
+	console.log(hash);
+	res.send("Sign In");
+});
+
+// LISTEN
 app.listen(process.env.APP_PORT, () => {
 	console.log("Server is running on port " + process.env.APP_PORT);
 });
