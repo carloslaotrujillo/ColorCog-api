@@ -4,12 +4,18 @@ import cors from "cors";
 import bcrypt from "bcrypt";
 import { Sequelize } from "sequelize";
 
+import { handleSignin } from "./controllers/signin.js";
+import { handleRegister } from "./controllers/register.js";
+import { handleProfile } from "./controllers/profile.js";
+import { getColorsFromUrl } from "./controllers/color.js";
+import { getColorsFromFile } from "./controllers/color.js";
+
 // INIT
 if (process.env.NODE_ENV === "development") {
 	dotenv.config();
 }
+
 const app = express();
-const SALT_ROUNDS = 10;
 
 // MIDDLEWARE
 app.use(cors());
@@ -37,15 +43,27 @@ app.get("/", (req, res) => {
 	res.send("It Works!");
 });
 
-app.post("/signin", (req, res) => {
-	const { username, password } = req.body;
-	const hash = bcrypt.hashSync(password, SALT_ROUNDS);
-	console.log(password);
-	console.log(hash);
-	res.send("Sign In");
+app.get("/profile/:id", (req, res) => {
+	handleProfile(req, res, sequelize);
 });
 
-// LISTEN
+app.post("/signin", (req, res) => {
+	handleSignin(req, res, sequelize, bcrypt);
+});
+
+app.post("/register", (req, res) => {
+	handleRegister(req, res, sequelize, bcrypt);
+});
+
+app.post("/url", (req, res) => {
+	getColorsFromUrl(req, res, sequelize);
+});
+
+app.post("/file", (req, res) => {
+	getColorsFromFile(req, res, sequelize);
+});
+
+// SERVER
 app.listen(process.env.APP_PORT, () => {
 	console.log("Server running on port " + process.env.APP_PORT);
 });

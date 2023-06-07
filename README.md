@@ -1,1 +1,1 @@
-# color-precog-server
+# color-precog-api
