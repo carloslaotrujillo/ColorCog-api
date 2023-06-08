@@ -1,6 +1,7 @@
+import bcrypt from "bcrypt";
 const SALT_ROUNDS = 10;
 
-export const handleSignin = (req, res, db, bcrypt) => {
+export const handleSignin = (db) => (req, res) => {
 	const { email, password } = req.body;
 	if (!email || !password) {
 		return res.status(400).json("incorrect form submission");

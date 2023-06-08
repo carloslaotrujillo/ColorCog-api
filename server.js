@@ -1,8 +1,11 @@
 import express from "express";
 import * as dotenv from "dotenv";
 import cors from "cors";
-import bcrypt from "bcrypt";
+import morgan from "morgan";
 import { Sequelize } from "sequelize";
+
+// import db from "./db.js";
+import { User } from "./models/user.js";
 
 import { handleSignin } from "./controllers/signin.js";
 import { handleRegister } from "./controllers/register.js";
@@ -20,50 +23,50 @@ const app = express();
 // MIDDLEWARE
 app.use(cors());
 app.use(express.json());
-
-// DB CONNECTION
-const sequelize = new Sequelize({
-	dialect: "postgres",
-	host: process.env.DB_HOST,
-	port: process.env.DB_PORT,
-	database: process.env.DB_NAME,
-	username: process.env.DB_USERNAME,
-	password: process.env.DB_PASSWORD,
-});
-
-try {
-	await sequelize.authenticate();
-	console.log("Connection has been established successfully.");
-} catch (error) {
-	console.error("Unable to connect to the database:", error);
-}
+app.use(morgan("common"));
 
 // ROUTES
 app.get("/", (req, res) => {
 	res.send("It Works!");
 });
 
-app.get("/profile/:id", (req, res) => {
-	handleProfile(req, res, sequelize);
+// DB
+const db = new Sequelize({
+	dialect: "postgres",
+	host: process.env.DB_HOST,
+	port: process.env.DB_PORT,
+	database: process.env.DB_NAME,
+	username: process.env.DB_USERNAME,
+	password: process.env.DB_PASSWORD,
+	logging: console.log,
 });
 
-app.post("/signin", (req, res) => {
-	handleSignin(req, res, sequelize, bcrypt);
-});
+app.get("/profile/:id", handleProfile(db));
 
-app.post("/register", (req, res) => {
-	handleRegister(req, res, sequelize, bcrypt);
-});
+app.post("/signin", handleSignin(db));
 
-app.post("/url", (req, res) => {
-	getColorsFromUrl(req, res, sequelize);
-});
+app.post("/register", handleRegister(db));
 
-app.post("/file", (req, res) => {
-	getColorsFromFile(req, res, sequelize);
-});
+app.post("/url", getColorsFromUrl(db));
+
+app.post("/file", getColorsFromFile(db));
 
 // SERVER
-app.listen(process.env.APP_PORT, () => {
-	console.log("Server running on port " + process.env.APP_PORT);
-});
+(async () => {
+	try {
+		await db.authenticate();
+		console.log("Connection has been established successfully.");
+
+		// await User.sync();
+
+		app.listen(process.env.APP_PORT, () => {
+			console.log("\n Server running on port " + process.env.APP_PORT);
+		});
+	} catch (error) {
+		console.error("Unable to connect to the database:", error);
+	}
+})();
+
+// app.listen(process.env.APP_PORT, () => {
+// 	console.log("\n Server running on port " + process.env.APP_PORT);
+// });
