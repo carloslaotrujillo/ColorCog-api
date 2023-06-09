@@ -21,7 +21,7 @@ const handleSignin = () => async (req, res) => {
 			return res.status(400).json({ error: "Incorrect email or password" });
 		}
 
-		res.status(200).json(user.id);
+		res.status(200).cookie("user", user.id, { secure: true, httpOnly: true }).json("Success");
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ error: "An error occurred while signing in." });

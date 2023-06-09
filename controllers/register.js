@@ -21,7 +21,7 @@ const handleRegister = () => async (req, res) => {
 				},
 				{ transaction: t }
 			);
-			res.status(200).json(user.id);
+			res.status(200).cookie("user", user.id, { secure: true, httpOnly: true }).json("Success");
 		});
 	} catch (error) {
 		console.error(error);

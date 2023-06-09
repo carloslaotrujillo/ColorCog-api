@@ -23,11 +23,6 @@ const User = db.define(
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
-		joined: {
-			type: DataTypes.DATE,
-			allowNull: false,
-			defaultValue: DataTypes.NOW,
-		},
 		entries: {
 			type: DataTypes.INTEGER,
 			allowNull: false,

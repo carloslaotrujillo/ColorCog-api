@@ -3,15 +3,16 @@ if (process.env.NODE_ENV === "development") {
 	require("dotenv").config();
 }
 
-const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const express = require("express");
 const { Sequelize } = require("sequelize");
+const cookieParser = require("cookie-parser");
 
-const signin = require("./controllers/signin");
-const register = require("./controllers/register");
-const profile = require("./controllers/profile");
 const colors = require("./controllers/color");
+const signin = require("./controllers/signin");
+const profile = require("./controllers/profile");
+const register = require("./controllers/register");
 
 const app = express();
 const db = require("./db");
@@ -22,7 +23,8 @@ const Color = require("./models/color");
 // MIDDLEWARE
 app.use(cors());
 app.use(express.json());
-app.use(morgan("common"));
+app.use(morgan("dev"));
+app.use(cookieParser());
 
 // ROUTES
 app.get("/users", async (req, res) => {
@@ -41,15 +43,13 @@ app.post("/signin", signin.handleSignin());
 
 app.post("/register", register.handleRegister());
 
-app.post("/url", colors.getColorsFromUrl());
-
-app.post("/file", colors.getColorsFromFile());
+app.post("/color", colors.getColors());
 
 // SERVER
 (async () => {
 	try {
 		await db.authenticate();
-		console.log("\nConnection has been established successfully.\n");
+		console.log("\nConnection has been established successfully.");
 
 		await User.sync();
 		await Color.sync();

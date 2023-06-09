@@ -11,7 +11,7 @@ const Color = db.define(
 			primaryKey: true,
 			unique: true,
 		},
-		userID: {
+		user_id: {
 			type: DataTypes.UUID,
 			allowNull: false,
 			references: {
@@ -24,6 +24,15 @@ const Color = db.define(
 		},
 		name_color: {
 			type: DataTypes.STRING,
+		},
+		entries: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue: 0,
+		},
+		type: {
+			type: DataTypes.STRING,
+			allowNull: false,
 		},
 	},
 	{
