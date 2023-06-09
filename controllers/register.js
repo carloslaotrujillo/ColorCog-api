@@ -1,19 +1,32 @@
-import bcrypt from "bcrypt";
-// import { User } from "../models/user.js";
+const bcrypt = require("bcrypt");
+const db = require("../db");
+const User = require("../models/user");
 
-const SALT_ROUNDS = 10;
-
-export const handleRegister = (db) => async (req, res) => {
+const handleRegister = () => async (req, res) => {
 	const { name, email, password } = req.body;
 
 	if (!name || !email || !password) {
-		return res.status(400).json("Incorrect form submission");
+		return res.status(400).json({ error: "Incorrect form submission" });
 	}
 
-	const hash = bcrypt.hashSync(password, SALT_ROUNDS);
+	const hash = bcrypt.hashSync(password, Number(process.env.SALT_ROUNDS));
 
-	const newUser = await User.create({ name: name, email: email, password: hash });
-	console.log(newUser);
-
-	res.send("User created!");
+	try {
+		const result = await db.transaction(async (t) => {
+			const user = await User.create(
+				{
+					name: name,
+					email: email,
+					password: hash,
+				},
+				{ transaction: t }
+			);
+			res.status(200).json(user.id);
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "An error occurred while registering in." });
+	}
 };
+
+module.exports = { handleRegister };

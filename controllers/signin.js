@@ -1,17 +1,31 @@
-import bcrypt from "bcrypt";
-const SALT_ROUNDS = 10;
+const bcrypt = require("bcrypt");
+const User = require("../models/user");
 
-export const handleSignin = (db) => (req, res) => {
+const handleSignin = () => async (req, res) => {
 	const { email, password } = req.body;
+
 	if (!email || !password) {
-		return res.status(400).json("incorrect form submission");
+		return res.status(400).json({ error: "Incorrect form submission" });
 	}
 
-	const hash = bcrypt.hashSync(password, SALT_ROUNDS);
+	try {
+		const user = await User.findOne({ where: { email: email } });
 
-	console.log(email);
-	console.log(password);
-	console.log(hash);
+		if (!user) {
+			return res.status(400).json({ error: "Incorrect email or password" });
+		}
 
-	res.send("Sign In");
+		const match = await bcrypt.compare(password, user.password);
+
+		if (!match) {
+			return res.status(400).json({ error: "Incorrect email or password" });
+		}
+
+		res.status(200).json(user.id);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: "An error occurred while signing in." });
+	}
 };
+
+module.exports = { handleSignin };

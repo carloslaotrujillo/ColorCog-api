@@ -1,7 +1,12 @@
-export const getColorsFromUrl = (db) => (req, res) => {
+const getColorsFromUrl = () => (req, res) => {
 	res.send("Get Colors From Url");
 };
 
-export const getColorsFromFile = (db) => (req, res) => {
+const getColorsFromFile = () => (req, res) => {
 	res.send("Get Colors From File");
+};
+
+module.exports = {
+	getColorsFromUrl: getColorsFromUrl,
+	getColorsFromFile: getColorsFromFile,
 };
