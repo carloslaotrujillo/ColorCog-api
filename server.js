@@ -49,13 +49,13 @@ app.post("/color", colors.getColors());
 (async () => {
 	try {
 		await db.authenticate();
-		console.log("\nConnection has been established successfully.");
+		console.log("\n=== DB Connection has been established successfully ===");
 
 		await User.sync();
 		await Color.sync();
 
 		app.listen(process.env.APP_PORT, () => {
-			console.log("\nServer running on port " + process.env.APP_PORT);
+			console.log("=== Server running on port " + process.env.APP_PORT + " ===");
 		});
 	} catch (error) {
 		console.error("\nUnable to connect to the database:", error);
