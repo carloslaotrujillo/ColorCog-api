@@ -10,7 +10,7 @@ const { fetchOptions } = require("./utils/colorUtils");
 const getUrlColorsFromAI = () => async (req, res) => {
 	// const client_user_id = req.cookies.user;
 	// if (!client_user_id) {
-	// 	return res.status(400).json({ error: "ID not found" });
+	// 	return res.status(400).json({ message: "ID not found" });
 	// }
 	const { src } = req.body;
 
@@ -20,14 +20,14 @@ const getUrlColorsFromAI = () => async (req, res) => {
 		res.status(200).json(result);
 	} catch (error) {
 		console.error(error);
-		return res.status(500).json({ error: "Error fetching colors." });
+		return res.status(500).json({ message: "Error fetching colors." });
 	}
 };
 
 const getFileColorsFromAI = () => async (req, res, next) => {
 	// const client_user_id = req.cookies.user;
 	// if (!client_user_id) {
-	// 	return res.status(400).json({ error: "ID not found" });
+	// 	return res.status(400).json({ message: "ID not found" });
 	// }
 	const filePath = req.file.path;
 	const base64Image = fs.readFileSync(path.join(process.cwd(), filePath)).toString("base64");
@@ -41,14 +41,14 @@ const getFileColorsFromAI = () => async (req, res, next) => {
 		res.status(200).json(result);
 	} catch (error) {
 		console.error(error);
-		return res.status(500).json({ error: "Error fetching colors." });
+		return res.status(500).json({ message: "Error fetching colors." });
 	}
 };
 
 const upsertColor = () => async (req, res) => {
 	const client_user_id = req.cookies.user;
 	if (!client_user_id) {
-		return res.status(400).json({ error: "ID not found" });
+		return res.status(400).json({ message: "ID not found" });
 	}
 
 	const { type, name_color, hex_color } = req.body;
@@ -58,7 +58,7 @@ const upsertColor = () => async (req, res) => {
 			const user = await User.findByPk(client_user_id, { transaction: t });
 
 			if (!user) {
-				return res.status(400).json({ error: "User not found" });
+				return res.status(400).json({ message: "User not found" });
 			}
 
 			const colorSearch = await Color.findOne({
@@ -87,11 +87,11 @@ const upsertColor = () => async (req, res) => {
 			user.entries += 1;
 			await user.save({ transaction: t });
 
-			res.status(200).json("Success");
+			res.status(200).json({ message: "Success" });
 		});
 	} catch (error) {
 		console.error(error);
-		res.status(500).json({ error: "An error occurred while upsert the color." });
+		res.status(500).json({ message: "An error occurred while upsert the color." });
 	}
 };
 
