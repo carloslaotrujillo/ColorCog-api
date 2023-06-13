@@ -1,12 +1,10 @@
-const bcrypt = require("bcrypt");
+const { checkPassword } = require("../auth/bcrypt");
 
-const db = require("../db");
+const db = require("../db/db");
 const User = require("../models/user");
 
 const handleLogin = () => async (req, res) => {
 	const { email, password } = req.body;
-
-	console.log(email, password);
 
 	if (!email || !password) {
 		return res.status(400).json({ message: "Incorrect form submission" });
@@ -20,7 +18,7 @@ const handleLogin = () => async (req, res) => {
 				return res.status(400).json({ message: "User not found" });
 			}
 
-			const match = await bcrypt.compare(password, user.password);
+			const match = await checkPassword(password, user.password);
 
 			if (!match) {
 				return res.status(400).json({ message: "Incorrect email or password" });

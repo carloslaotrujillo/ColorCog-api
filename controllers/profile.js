@@ -1,22 +1,19 @@
-const db = require("../db");
+const db = require("../db/db");
 const User = require("../models/user");
 const Color = require("../models/color");
 
 const handleProfile = () => async (req, res) => {
-	const client_user_id = req.cookies.user;
-	if (!client_user_id) {
-		return res.status(400).json({ message: "ID not found" });
-	}
+	const { user_id } = req.body;
 
 	try {
 		const result = await db.transaction(async (t) => {
-			const user = await User.findByPk(client_user_id, { transaction: t });
+			const user = await User.findByPk(user_id, { transaction: t });
 
 			if (!user) {
 				return res.status(400).json({ message: "User not found" });
 			}
 
-			const colors = await Color.findAll({ where: { user_id: client_user_id } }, { transaction: t });
+			const colors = await Color.findAll({ where: { user_id: user_id } }, { transaction: t });
 
 			res.status(200).json({ user: user, colors: colors });
 		});
