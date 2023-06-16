@@ -10,16 +10,7 @@ const verifyToken = (token) => {
 	return jwt.verify(token, secret);
 };
 
-const cookieExtractor = (req) => {
-	let token = null;
-	if (req && req.cookies) {
-		token = req.cookies["jwt"];
-	}
-	return token;
-};
-
 module.exports = {
 	verifyToken,
 	generateToken,
-	cookieExtractor,
 };

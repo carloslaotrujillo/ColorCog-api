@@ -6,10 +6,10 @@ if (process.env.NODE_ENV === "development") {
 const cors = require("cors");
 const morgan = require("morgan");
 const express = require("express");
-const passport = require("passport");
-const { Sequelize } = require("sequelize");
 const cookieParser = require("cookie-parser");
+const passport = require("passport");
 const jwtStrategy = require("./auth/strategies");
+const { Sequelize } = require("sequelize");
 
 const app = express();
 const db = require("./db/db");

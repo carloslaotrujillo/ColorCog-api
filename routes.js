@@ -13,12 +13,12 @@ const jwtAuth = passport.authenticate("jwt", {
 	session: false,
 });
 
-router.post("/login", login.handleLogin());
+router.post("/login", jwtAuth, login.handleLogin());
 router.post("/profile", jwtAuth, profile.handleProfile());
 router.post("/register", register.handleRegister());
 
-router.post(`/api/${process.env.API_VERSION}/color/upsert`, colors.upsertColor());
-router.post(`/api/${process.env.API_VERSION}/color/url`, colors.getUrlColorsFromAI());
+router.post(`/api/${process.env.API_VERSION}/color/upsert`, jwtAuth, colors.upsertColor());
+router.post(`/api/${process.env.API_VERSION}/color/url`, jwtAuth, colors.getUrlColorsFromAI());
 router.post(`/api/${process.env.API_VERSION}/color/file`, upload.single("image"), colors.getFileColorsFromAI());
 
 module.exports = router;
