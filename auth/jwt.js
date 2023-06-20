@@ -10,7 +10,16 @@ const verifyToken = (token) => {
 	return jwt.verify(token, secret);
 };
 
+const setCookie = (res, jwt) => {
+	res.cookie("token", jwt, {
+		secure: true,
+		httpOnly: true,
+		sameSite: "strict",
+	});
+};
+
 module.exports = {
 	verifyToken,
 	generateToken,
+	setCookie,
 };

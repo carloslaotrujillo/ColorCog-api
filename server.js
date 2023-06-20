@@ -19,7 +19,11 @@ const User = require("./models/user");
 const Color = require("./models/color");
 
 // MIDDLEWARE
-app.use(cors());
+const corsOptions = {
+	origin: process.env.CORS_ORIGIN,
+	credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());

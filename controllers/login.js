@@ -1,7 +1,6 @@
-const { checkPassword } = require("../auth/bcrypt");
-
 const db = require("../db/db");
 const User = require("../models/user");
+const { checkPassword } = require("../auth/bcrypt");
 
 const handleLogin = () => async (req, res) => {
 	const { email, password } = req.body;
